@@ -130,10 +130,10 @@ protected:
     return true;
   }
 
-  virtual std::set<std::string> getHardwareInterfaceTypes() const
+  virtual std::vector<std::string> getHardwareInterfaceTypes() const
   {
-    std::set<std::string> ret_types;
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T>());
+    std::vector<std::string> ret_types;
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T>());
     return ret_types;
   }
 

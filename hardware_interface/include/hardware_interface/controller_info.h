@@ -43,7 +43,7 @@ namespace hardware_interface
 struct ControllerInfo
 {
   std::string name, type;
-  std::set<std::string> hardware_interfaces;
+  std::vector<std::string> hardware_interfaces;
   std::set<std::string> resources;
 };
 

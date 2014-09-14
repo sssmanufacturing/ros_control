@@ -564,10 +564,7 @@ bool ControllerManager::listControllersSrv(
     controller_manager_msgs::ControllerState& cs = resp.controller[i];
     cs.name               = controllers[i].info.name;
     cs.type               = controllers[i].info.type;
-    cs.hardware_interfaces.clear();
-    cs.hardware_interfaces.reserve(controllers[i].info.hardware_interfaces.size());
-    for (std::set<std::string>::iterator it = controllers[i].info.hardware_interfaces.begin(); it != controllers[i].info.hardware_interfaces.end(); ++it)
-      cs.hardware_interfaces.push_back(*it);
+    cs.hardware_interfaces = controllers[i].info.hardware_interfaces;
     cs.resources.clear();
     cs.resources.reserve(controllers[i].info.resources.size());
     for (std::set<std::string>::iterator it = controllers[i].info.resources.begin(); it != controllers[i].info.resources.end(); ++it)
