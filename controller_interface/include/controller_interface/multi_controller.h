@@ -116,7 +116,7 @@ protected:
     T2* hw2 = robot_hw->get<T2>();
     if (!hw1 || !hw2)
     {
-      std::set<std::string>::iterator types_iter = getHardwareInterfaceTypes().begin();
+      std::vector<std::string>::iterator types_iter = getHardwareInterfaceTypes().begin();
       std::string type1 = *types_iter; types_iter++;
       std::string type2 = *types_iter; 
       ROS_ERROR("This controller requires hardware interfaces of types '%s' and '%s'."
@@ -144,11 +144,11 @@ protected:
     return true;
   }
 
-  virtual std::set<std::string> getHardwareInterfaceTypes() const
+  virtual std::vector<std::string> getHardwareInterfaceTypes() const
   {
-    std::set<std::string> ret_types;
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T1>());
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T2>());
+    std::vector<std::string> ret_types;
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T1>());
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T2>());
     return ret_types;
   }
 
@@ -241,7 +241,7 @@ protected:
     T3* hw3 = robot_hw->get<T3>();
     if (!hw1 || !hw2 || !hw3)
     {
-      std::set<std::string>::iterator types_iter = getHardwareInterfaceTypes().begin();
+      std::vector<std::string>::iterator types_iter = getHardwareInterfaceTypes().begin();
       std::string type1 = *types_iter; types_iter++;
       std::string type2 = *types_iter; types_iter++;
       std::string type3 = *types_iter; 
@@ -274,12 +274,12 @@ protected:
     return true;
   }
 
-  virtual std::set<std::string> getHardwareInterfaceTypes() const
+  virtual std::vector<std::string> getHardwareInterfaceTypes() const
   {
-    std::set<std::string> ret_types;
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T1>());
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T2>());
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T3>());
+    std::vector<std::string> ret_types;
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T1>());
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T2>());
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T3>());
     return ret_types;
   }
 
@@ -380,7 +380,7 @@ protected:
     T4* hw4 = robot_hw->get<T4>();
     if (!hw1 || !hw2 || !hw3 || !hw4)
     {
-      std::set<std::string>::iterator types_iter = getHardwareInterfaceTypes().begin();
+      std::vector<std::string>::iterator types_iter = getHardwareInterfaceTypes().begin();
       std::string type1 = *types_iter; types_iter++;
       std::string type2 = *types_iter; types_iter++;
       std::string type3 = *types_iter; types_iter++;
@@ -418,13 +418,13 @@ protected:
     return true;
   }
 
-  virtual std::string getHardwareInterfaceType() const
+  virtual std::vector<std::string> getHardwareInterfaceTypes() const
   {
-    std::set<std::string> ret_types;
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T1>());
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T2>());
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T3>());
-    ret_types.insert(hardware_interface::internal::demangledTypeName<T4>());
+    std::vector<std::string> ret_types;
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T1>());
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T2>());
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T3>());
+    ret_types.push_back(hardware_interface::internal::demangledTypeName<T4>());
     return ret_types;
   }
 

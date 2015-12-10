@@ -123,12 +123,12 @@ public:
    *\{*/
 
   /// Get the names of the hardware interface types this controller uses
-  virtual std::set<std::string> getHardwareInterfaceTypes() const = 0;
+  virtual std::vector<std::string> getHardwareInterfaceTypes() const = 0;
 
   /// Get the single name of the hardware interface this controller uses
   virtual std::string getHardwareInterfaceType() 
   {
-    std::set<std::string> types = getHardwareInterfaceTypes();
+    std::vector<std::string> types = getHardwareInterfaceTypes();
 
     if(types.size() == 0) {
       ROS_WARN("This controller has no interface type!");
