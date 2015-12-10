@@ -42,7 +42,7 @@ namespace controller_manager_tests
 class MyRobotHW : public hardware_interface::RobotHW
 {
 public:
-  MyRobotHW();
+  MyRobotHW(std::string joint_prefix = "hiDOF_");
 
   void read();
   void write();
@@ -61,6 +61,14 @@ private:
   std::vector<double> joint_effort_;
   std::vector<std::string> joint_name_;
 };
+
+class DerivedMyRobotHW : public MyRobotHW 
+{
+public:
+  DerivedMyRobotHW(std::string joint_prefix = "hiDOF_")
+    : MyRobotHW(joint_prefix + "derived_") {}
+};
+
 }
 
 

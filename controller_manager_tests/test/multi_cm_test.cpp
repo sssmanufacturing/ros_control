@@ -1,5 +1,7 @@
+// Author: Kelsey Hawkins
+// Based on code by:
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, hiDOF, INC and Willow Garage, Inc
+// Copyright (C) 2012, hiDOF INC.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -8,7 +10,7 @@
 //   * Redistributions in binary form must reproduce the above copyright
 //     notice, this list of conditions and the following disclaimer in the
 //     documentation and/or other materials provided with the distribution.
-//   * Neither the name of Willow Garage Inc, hiDOF Inc, nor the names of its
+//   * Neither the name of hiDOF Inc nor the names of its
 //     contributors may be used to endorse or promote products derived from
 //     this software without specific prior written permission.
 //
@@ -25,28 +27,38 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
+//! /author Vijay Pradeep, Kelsey Hawkins
 
-#ifndef HARDWARE_INTERFACE_CONTROLLER_INFO_H
-#define HARDWARE_INTERFACE_CONTROLLER_INFO_H
+#include <ros/ros.h>
+#include <gtest/gtest.h>
 
-#include <set>
-#include <string>
+#include <controller_manager_msgs/LoadController.h>
 
-namespace hardware_interface
+using namespace controller_manager_msgs;
+
+TEST(CMTests, spawnTestGood)
 {
-
-/** \brief Controller Information
- *
- * This struct contains information about a given controller.
- *
- */
-struct ControllerInfo
-{
-  std::string name, type;
-  std::vector<std::string> hardware_interfaces;
-  std::set<std::string> resources;
-};
-
+  ros::NodeHandle nh;
+  ros::ServiceClient client = nh.serviceClient<LoadController>("/controller_manager/load_controller");
+  LoadController srv;
+  srv.request.name = "multi_controller";
+  bool call_success = client.call(srv);
+  EXPECT_TRUE(call_success);
+  EXPECT_TRUE(srv.response.ok);
 }
 
-#endif
+int main(int argc, char** argv)
+{
+  testing::InitGoogleTest(&argc, argv);
+  ros::init(argc, argv, "ControllerManagerTestNode");
+
+  ros::AsyncSpinner spinner(1);
+
+  // wait for services
+  ROS_INFO("Waiting for service");
+  ros::service::waitForService("/controller_manager/load_controller");
+  ROS_INFO("Start tests");
+  spinner.start();
+
+  return RUN_ALL_TESTS();
+}

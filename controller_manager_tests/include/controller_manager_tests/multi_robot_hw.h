@@ -1,5 +1,7 @@
+// Author: Kelsey Hawkins
+// Based on code by:
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, hiDOF, INC and Willow Garage, Inc
+// Copyright (C) 2012, hiDOF INC.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -8,7 +10,7 @@
 //   * Redistributions in binary form must reproduce the above copyright
 //     notice, this list of conditions and the following disclaimer in the
 //     documentation and/or other materials provided with the distribution.
-//   * Neither the name of Willow Garage Inc, hiDOF Inc, nor the names of its
+//   * Neither the name of hiDOF, Inc. nor the names of its
 //     contributors may be used to endorse or promote products derived from
 //     this software without specific prior written permission.
 //
@@ -25,28 +27,44 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef HARDWARE_INTERFACE_CONTROLLER_INFO_H
-#define HARDWARE_INTERFACE_CONTROLLER_INFO_H
-
-#include <set>
-#include <string>
-
-namespace hardware_interface
-{
-
-/** \brief Controller Information
- *
- * This struct contains information about a given controller.
- *
+/*
+ * Author: Wim Meeussen, Kelsey Hawkins
  */
-struct ControllerInfo
-{
-  std::string name, type;
-  std::vector<std::string> hardware_interfaces;
-  std::set<std::string> resources;
-};
 
+
+#ifndef CONTROLLER_MANAGER_TESTS_MULTI_ROBOT_HW_H
+#define CONTROLLER_MANAGER_TESTS_MULTI_ROBOT_HW_H
+
+#include <hardware_interface/joint_command_interface.h>
+#include <hardware_interface/robot_hw.h>
+
+namespace controller_manager_tests
+{
+
+// Used to test multiple robot hardware mixed together
+class TypeARobotHW : public hardware_interface::RobotHW
+{
+public:
+  TypeARobotHW(int id);
+
+  void read();
+  void write();
+
+protected:
+
+private:
+  hardware_interface::JointStateInterface    js_interface_;
+  hardware_interface::EffortJointInterface   ej_interface_;
+  hardware_interface::VelocityJointInterface vj_interface_;
+
+  std::vector<double> joint_effort_command_;
+  std::vector<double> joint_velocity_command_;
+  std::vector<double> joint_position_;
+  std::vector<double> joint_velocity_;
+  std::vector<double> joint_effort_;
+  std::vector<std::string> joint_name_;
+};
 }
+
 
 #endif

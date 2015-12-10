@@ -168,6 +168,50 @@ bool getJointLimits(const std::string& joint_name, const ros::NodeHandle& nh, Jo
   return true;
 }
 
+bool getSoftJointLimits(const std::string& joint_name, const ros::NodeHandle& nh, SoftJointLimits& soft_limits)
+{
+  // Node handle scoped where the joint limits are defined
+  ros::NodeHandle limits_nh;
+  try
+  {
+    const std::string limits_namespace = "joint_limits/" + joint_name;
+    if (!nh.hasParam(limits_namespace))
+    {
+      ROS_DEBUG_STREAM("No joint limits specification found for joint '" << joint_name <<
+                       "' in the parameter server (namespace " << nh.getNamespace() + "/" + limits_namespace << ").");
+      return false;
+    }
+    limits_nh = ros::NodeHandle(nh, limits_namespace);
+  }
+  catch(const ros::InvalidNameException& ex)
+  {
+    ROS_ERROR_STREAM(ex.what());
+    return false;
+  }
+
+  bool has_soft_limits = false;
+  double k_position, soft_lower_limit, soft_upper_limit;
+  if(limits_nh.getParam("k_position", k_position) && 
+     limits_nh.getParam("soft_lower_limit", soft_lower_limit) && limits_nh.getParam("soft_upper_limit", soft_upper_limit)) {
+    if(k_position > 0.0 && soft_lower_limit < soft_upper_limit) {
+      soft_limits.k_position = k_position;
+      soft_limits.min_position = soft_lower_limit;
+      soft_limits.max_position = soft_upper_limit;
+      has_soft_limits = true;
+    }
+  }
+
+  double k_velocity;
+  if(limits_nh.getParam("k_velocity", k_velocity)) {
+    if(k_velocity > 0.0) {
+      soft_limits.k_velocity = k_velocity;
+      has_soft_limits = true;
+    }
+  }
+
+  return has_soft_limits;
+}
+
 }
 
 #endif

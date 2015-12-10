@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, hiDOF, INC and Willow Garage, Inc
+// Copyright (C) 2012, hiDOF INC.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -8,7 +8,7 @@
 //   * Redistributions in binary form must reproduce the above copyright
 //     notice, this list of conditions and the following disclaimer in the
 //     documentation and/or other materials provided with the distribution.
-//   * Neither the name of Willow Garage Inc, hiDOF Inc, nor the names of its
+//   * Neither the name of hiDOF Inc nor the names of its
 //     contributors may be used to endorse or promote products derived from
 //     this software without specific prior written permission.
 //
@@ -25,28 +25,46 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include <ros/ros.h>
+#include <controller_manager/controller_manager.h>
+#include <controller_manager_tests/my_robot_hw.h>
 
-#ifndef HARDWARE_INTERFACE_CONTROLLER_INFO_H
-#define HARDWARE_INTERFACE_CONTROLLER_INFO_H
+using namespace controller_manager_tests;
 
-#include <set>
-#include <string>
-
-namespace hardware_interface
+int main(int argc, char** argv)
 {
+  ros::init(argc, argv, "MultiDummyApp");
 
-/** \brief Controller Information
- *
- * This struct contains information about a given controller.
- *
- */
-struct ControllerInfo
-{
-  std::string name, type;
-  std::vector<std::string> hardware_interfaces;
-  std::set<std::string> resources;
-};
+  ros::AsyncSpinner spinner(1);
+  spinner.start();
 
+  MyRobotHW hw_vel_base("vel_");
+  MyRobotHW hw_eff_base("eff_");
+  DerivedMyRobotHW hw_vel_derived("vel_");
+  DerivedMyRobotHW hw_eff_derived("eff_");
+  hardware_interface::RobotHW hw_combined;
+  hw_combined.registerInterfaceManager(&hw_vel_base);
+  hw_combined.registerInterfaceManager(&hw_eff_base);
+  hw_combined.registerInterfaceManager(&hw_vel_derived);
+  hw_combined.registerInterfaceManager(&hw_eff_derived);
+
+  ros::NodeHandle nh;
+  controller_manager::ControllerManager cm(&hw_combined, nh);
+
+  ros::Duration period(1.0);
+  while (ros::ok())
+  {
+    ROS_INFO("loop");
+    hw_vel_base.read();
+    hw_eff_base.read();
+    hw_vel_derived.read();
+    hw_eff_derived.read();
+    cm.update(ros::Time::now(), period);
+    hw_vel_base.write();
+    hw_eff_base.write();
+    hw_vel_derived.write();
+    hw_eff_derived.write();
+    period.sleep();
+  }
 }
 
-#endif
